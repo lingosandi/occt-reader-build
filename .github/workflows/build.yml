@@ -1,0 +1,17 @@
+name: Build kernel
+on: [workflow_dispatch]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+      - name: Link custom build
+        run: |
+          cd build
+          docker run --rm -v "$(pwd):/src" -u "$(id -u):$(id -g)" ghcr.io/taucad/opencascade.js:canary-ebd263f1-single-threaded link custom_build_single.yml
+      - uses: actions/upload-artifact@v4
+        with:
+          name: replicad_single
+          path: build/replicad_single.*
+          if-no-files-found: error
